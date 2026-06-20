@@ -3,40 +3,43 @@
 
 <!--
 ╔══════════════════════════════════════════════════════════════════════════╗
-║  AssetMS Full Regression Suite  (TestNg.xml)                           ║
-║  13 Scenarios × 5 Test Cases = 65 Test Cases                           ║
-║  Runs ALL tests tagged with the "regression" group                     ║
-║  Browser: Chrome  |  Parallel: classes  |  Threads: 2                  ║
+║  AssetMS SANITY Suite  (TestNg_Sanity.xml)                             ║
+║  13 Tests — one per module (quick smoke check, ~5-8 minutes)           ║
+║  Runs ONLY tests tagged with the "sanity" group                        ║
 ╚══════════════════════════════════════════════════════════════════════════╝
 
-  GROUP TAXONOMY
+  WHAT IS IN SANITY?
+  One critical test per module that verifies the page loads / core action works.
   ─────────────────────────────────────────────────────────────────────────
-  regression  → every test in the suite (65 tests)
-  sanity      → one critical test per module (13 tests, ~quick smoke)
-  admin       → tests that require admin login
-  employee    → tests that require employee login
-  positive    → happy-path / success scenarios
-  negative    → error / invalid-input scenarios
+  TC-S01 → testAdminLoginSuccess
+  TC-S02 → testDashboardPageLoads
+  TC-S03 → testEmployeeListLoads
+  TC-S04 → testAssetManagementPageLoads
+  TC-S05 → testAssetAssignmentPageLoads
+  TC-S06 → testAssetTrackingPageLoads
+  TC-S07 → testDetailsPageLoads
+  TC-S08 → testTicketManagementPageLoads
+  TC-S09 → testEmployeeDashboardLoads
+  TC-S10 → testTicketPageLoadsForEmployee
+  TC-S11 → testAdminLogout
+  TC-S12 → testAssignedAssetsSectionExists
+  TC-S13 → testAssetExistsBeforeDelete
   ─────────────────────────────────────────────────────────────────────────
 
-  To run only sanity  → mvn test -Dsurefire.suiteXmlFiles=TestNg_Sanity.xml
-  To run only admin   → mvn test -Dsurefire.suiteXmlFiles=TestNg_Admin.xml
-  To run only employee→ mvn test -Dsurefire.suiteXmlFiles=TestNg_Employee.xml
-  To run all          → mvn test  (uses this file)
+  Run: mvn test -Dsurefire.suiteXmlFiles=TestNg_Sanity.xml
 -->
-<suite name="AssetMS Full Regression Suite" parallel="classes" thread-count="2">
+<suite name="AssetMS Sanity Suite" parallel="classes" thread-count="2">
 
     <listeners>
         <listener class-name="com.assetms.tests.MyListener"/>
     </listeners>
 
-    <test name="Regression Tests - Chrome">
+    <test name="Sanity Tests - Chrome">
         <parameter name="browser" value="chrome"/>
 
-        <!-- Run ONLY tests in the 'regression' group -->
         <groups>
             <run>
-                <include name="regression"/>
+                <include name="sanity"/>
             </run>
         </groups>
 

@@ -6,42 +6,63 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.testng.annotations.*;
-import java.io.IOException;
+
 import java.time.Duration;
 
+/**
+ * BaseTest – Parent class for all test classes.
+ *
+ * Driver lifecycle: @BeforeClass / @AfterClass (one browser per test class).
+ *
+ * WHY @BeforeClass instead of @BeforeMethod?
+ * TestNG executes @BeforeClass methods in inheritance order:
+ *   1. BaseTest.setUp()           → driver initialised
+ *   2. ChildTest.loginAndNavigate() → driver is available ✓
+ * This also enables running any individual @Test method directly from the IDE.
+ *
+ * All @Test groups follow this taxonomy:
+ *   sanity     – one critical test per module (quick smoke check, ~13 tests)
+ *   regression – every test in the suite (65 tests)
+ *   admin      – tests that log in as Admin
+ *   employee   – tests that log in as Employee
+ *   positive   – happy-path / success scenarios
+ *   negative   – error / invalid-input scenarios
+ */
 @Listeners(MyListener.class)
 public class BaseTest {
+
     protected WebDriver driver;
-    // Vercel deployment URL
     protected final String BASE_URL = "https://assets-management-sandy.vercel.app/";
 
-    @BeforeMethod
+    // ── Driver Initialisation ─────────────────────────────────────────────────────
+    // @BeforeClass runs ONCE per test class.
+    // The parent's @BeforeClass always runs before the child's @BeforeClass.
+    @BeforeClass(alwaysRun = true)
     @Parameters(value = {"browser"})
-    public void setUp(@Optional("chrome") String browser) throws IOException {
+    public void setUp(@Optional("chrome") String browser) {
         if (browser == null) browser = "chrome";
 
-        if (browser.equalsIgnoreCase("chrome")) {
+        if (browser.equalsIgnoreCase("edge")) {
+            EdgeOptions options = new EdgeOptions();
+            options.addArguments("--headless=new", "--disable-gpu", "--window-size=1920,1080", "--disable-notifications");
+            driver = new EdgeDriver(options);
+        } else {
+            // Default: Chrome
             ChromeOptions options = new ChromeOptions();
-            options.addArguments("--start-maximized");
-            options.addArguments("--disable-notifications");
+            options.addArguments("--headless=new", "--disable-gpu", "--window-size=1920,1080", "--no-sandbox", "--disable-dev-shm-usage", "--disable-notifications");
             driver = new ChromeDriver(options);
         }
-        else if (browser.equalsIgnoreCase("edge")) {
-            EdgeOptions options = new EdgeOptions();
-            options.addArguments("--start-maximized");
-            options.addArguments("--disable-notifications");
-            driver = new EdgeDriver(options);
-        }
 
-        // Apply environment settings uniformly to both browsers
-        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(100));
         driver.get(BASE_URL);
     }
 
-    @AfterMethod
+    // ── Driver Teardown ───────────────────────────────────────────────────────────
+    @AfterClass(alwaysRun = true)
     public void tearDown() {
         if (driver != null) {
             driver.quit();
+            driver = null;
         }
     }
 }

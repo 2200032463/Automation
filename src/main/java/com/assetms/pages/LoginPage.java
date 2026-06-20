@@ -1,48 +1,59 @@
 package com.assetms.pages;
 
+import com.assetms.utils.WaitUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import java.time.Duration;
+
 
 public class LoginPage {
-    private WebDriver driver;
-    private WebDriverWait wait;
 
-    // 1. Locators (Using standard Angular form control selectors or IDs)
-    private By emailField = By.cssSelector("input[type='email']");
-    private By passwordField = By.cssSelector("input[type='password']");
-    private By signInButton = By.cssSelector("button[type='submit']");
+    private final WebDriver driver;
 
-    // Constructor
+    // ── Locators ────────────────────────────────────────────────────────────────
+    private final By emailField    = By.cssSelector("input[type='email']");
+    private final By passwordField = By.cssSelector("input[type='password']");
+    private final By loginButton   = By.cssSelector("button[type='submit']");
+    private final By messageText   = By.cssSelector("p.info");
+
+    // ── Constructor ──────────────────────────────────────────────────────────────
     public LoginPage(WebDriver driver) {
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
-    // 2. Page Actions
+    // ── Actions ──────────────────────────────────────────────────────────────────
+
     public void enterEmail(String email) {
-        WebElement emailElement = wait.until(ExpectedConditions.visibilityOfElementLocated(emailField));
-        emailElement.clear();
-        emailElement.sendKeys(email);
+        WaitUtils.type(driver, emailField, email);
     }
 
     public void enterPassword(String password) {
-        WebElement passwordElement = driver.findElement(passwordField);
-        passwordElement.clear();
-        passwordElement.sendKeys(password);
+        WaitUtils.type(driver, passwordField, password);
     }
 
-    public void clickSignIn() {
-        driver.findElement(signInButton).click();
+    public void clickLogin() {
+        WaitUtils.click(driver, loginButton);
     }
 
-    // Combined workflow action
+    /** Combined login helper – enters credentials and clicks Login. */
     public void login(String email, String password) {
         enterEmail(email);
         enterPassword(password);
-        clickSignIn();
+        clickLogin();
+    }
+
+    /**
+     * Returns the message text shown below the form (success or error).
+     * e.g. "Invalid credentials"
+     */
+    public String getMessage() {
+        return WaitUtils.waitForText(driver, messageText);
+    }
+
+    /**
+     * Waits for the URL to redirect to the expected path after login.
+     * @param urlFragment  e.g. "/admin-dashboard"
+     */
+    public boolean isRedirectedTo(String urlFragment) {
+        return WaitUtils.waitForUrlContains(driver, urlFragment);
     }
 }
