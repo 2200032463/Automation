@@ -34,7 +34,7 @@ public class TicketManagementPage {
     private final WebDriver driver;
 
     private final By navTicketManagement =
-            By.xpath("//nav//a[normalize-space(text())='Ticket Management']");
+            By.xpath("//span[normalize-space()='Ticket Management']");
 
     // ── Page Heading ─────────────────────────────────────────────────────────────
     private final By pageHeading = By.xpath("//h2[normalize-space(text())='Ticket Management']");

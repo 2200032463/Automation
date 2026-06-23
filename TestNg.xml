@@ -1,29 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
-<!--
-╔══════════════════════════════════════════════════════════════════════════╗
-║  AssetMS Full Regression Suite  (TestNg.xml)                           ║
-║  13 Scenarios × 5 Test Cases = 65 Test Cases                           ║
-║  Runs ALL tests tagged with the "regression" group                     ║
-║  Browser: Chrome  |  Parallel: classes  |  Threads: 2                  ║
-╚══════════════════════════════════════════════════════════════════════════╝
 
-  GROUP TAXONOMY
-  ─────────────────────────────────────────────────────────────────────────
-  regression  → every test in the suite (65 tests)
-  sanity      → one critical test per module (13 tests, ~quick smoke)
-  admin       → tests that require admin login
-  employee    → tests that require employee login
-  positive    → happy-path / success scenarios
-  negative    → error / invalid-input scenarios
-  ─────────────────────────────────────────────────────────────────────────
-
-  To run only sanity  → mvn test -Dsurefire.suiteXmlFiles=TestNg_Sanity.xml
-  To run only admin   → mvn test -Dsurefire.suiteXmlFiles=TestNg_Admin.xml
-  To run only employee→ mvn test -Dsurefire.suiteXmlFiles=TestNg_Employee.xml
-  To run all          → mvn test  (uses this file)
--->
 <suite name="AssetMS Full Regression Suite" parallel="classes" thread-count="2">
 
     <listeners>

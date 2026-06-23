@@ -9,25 +9,6 @@ import org.testng.annotations.*;
 
 import java.time.Duration;
 
-/**
- * BaseTest – Parent class for all test classes.
- *
- * Driver lifecycle: @BeforeClass / @AfterClass (one browser per test class).
- *
- * WHY @BeforeClass instead of @BeforeMethod?
- * TestNG executes @BeforeClass methods in inheritance order:
- *   1. BaseTest.setUp()           → driver initialised
- *   2. ChildTest.loginAndNavigate() → driver is available ✓
- * This also enables running any individual @Test method directly from the IDE.
- *
- * All @Test groups follow this taxonomy:
- *   sanity     – one critical test per module (quick smoke check, ~13 tests)
- *   regression – every test in the suite (65 tests)
- *   admin      – tests that log in as Admin
- *   employee   – tests that log in as Employee
- *   positive   – happy-path / success scenarios
- *   negative   – error / invalid-input scenarios
- */
 @Listeners(MyListener.class)
 public class BaseTest {
 

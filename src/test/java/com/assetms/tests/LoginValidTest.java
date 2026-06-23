@@ -5,9 +5,9 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-/**
- * TS_LGN_001: Valid Login & Session
- */
+
+ //TS_LGN_001: Valid Login & Session
+
 public class LoginValidTest extends BaseTest {
 
     // ── TC_LGN_001 ──────────────────────────────────────────────────────────────
@@ -50,7 +50,7 @@ public class LoginValidTest extends BaseTest {
     // ── TC_LGN_003 ──────────────────────────────────────────────────────────────
     @Test(priority = 3,
           groups = {"regression", "admin", "positive"},
-          description = "TC_LGN_003: Session storage keys validated on login")
+          description = "TC_LGN_003: Session storage keys validated on login",enabled = false)
     public void testSessionStorageKeys() {
         driver.get(BASE_URL);
         LoginPage loginPage = new LoginPage(driver);

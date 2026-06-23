@@ -1,3 +1,4 @@
+
 package com.assetms.pages;
 
 import com.assetms.utils.WaitUtils;
@@ -11,7 +12,7 @@ public class AssetAssignmentPage {
     private final WebDriver driver;
 
     private final By navAssetAssignment =
-            By.xpath("//nav//a[normalize-space(text())='Asset Assignment']");
+            By.xpath("//span[normalize-space()='Asset Assignment']");
 
     // ── Page Heading ─────────────────────────────────────────────────────────────
     private final By pageHeading = By.xpath("//h2[normalize-space(text())='Assign Asset']");

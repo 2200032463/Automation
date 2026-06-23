@@ -103,10 +103,10 @@ public class MyListener implements ITestListener, IInvokedMethodListener {
             Object testInstance = testResult.getInstance();
             if (testInstance instanceof BaseTest) {
                 BaseTest baseTest = (BaseTest) testInstance;
-                Class<?> clazz = testInstance.getClass();
+                String className = testInstance.getClass().getSimpleName();
                 
                 // Only clear session for stateless test classes where each method performs its own login
-                if (clazz.equals(LoginValidTest.class) || clazz.equals(LoginInvalidTest.class)) {
+                if (className.equals("LoginValidTest") || className.equals("LoginInvalidTest")) {
                     WebDriver driver = baseTest.driver;
                     if (driver != null) {
                         try {

@@ -13,7 +13,7 @@ public class AssetTrackingPage {
     private final WebDriver driver;
 
     private final By navAssetTracking =
-            By.xpath("//nav//a[normalize-space(text())='Asset Tracking']");
+            By.xpath("//span[normalize-space()='Asset Tracking']");
 
     // ── Page Heading ─────────────────────────────────────────────────────────────
     private final By pageHeading = By.xpath("//h2[normalize-space(text())='Asset Tracking Page']");
@@ -133,3 +133,4 @@ public class AssetTrackingPage {
         return true;
     }
 }
+

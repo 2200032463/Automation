@@ -23,7 +23,7 @@ public class AssetManagementPage {
 
     // ── Navigation ──────────────────────────────────────────────────────────────
     // Sidebar link text: "Asset Management"
-    private final By navAssetManagement = By.xpath("//nav//a[normalize-space(text())='Asset Management']");
+    private final By navAssetManagement = By.xpath("//span[normalize-space()='Asset Management']");
 
     // ── Add / Update Form ────────────────────────────────────────────────────────
     private final By assetNameInput    = By.cssSelector("input[formcontrolname='assetName']");
@@ -69,8 +69,8 @@ public class AssetManagementPage {
      * @param condition    One of: GOOD, FAIR, DAMAGED
      */
     public void fillAssetForm(String assetName, String category, String brand,
-                               String purchaseDate, String warrantyDate,
-                               String status, String condition) {
+                              String purchaseDate, String warrantyDate,
+                              String status, String condition) {
         WaitUtils.type(driver, assetNameInput, assetName);
         new Select(WaitUtils.waitForVisible(driver, categorySelect)).selectByVisibleText(category);
         WaitUtils.type(driver, brandInput, brand);
@@ -82,7 +82,7 @@ public class AssetManagementPage {
 
     /** Overloaded – legacy signature used by existing AssetManagementTest. */
     public void fillAssetDetails(String assetName, String category, String brand,
-                                  String status, String condition) {
+                                 String status, String condition) {
         WaitUtils.type(driver, assetNameInput, assetName);
         new Select(WaitUtils.waitForVisible(driver, categorySelect)).selectByVisibleText(category);
         WaitUtils.type(driver, brandInput, brand);

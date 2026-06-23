@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
-<!--
-╔══════════════════════════════════════════════════════════════════════════╗
-║  AssetMS ADMIN Suite  (TestNg_Admin.xml)                               ║
-║  Runs only tests tagged with the "admin" group                         ║
-║  Use when you want to validate all Admin-role functionality             ║
-╚══════════════════════════════════════════════════════════════════════════╝
 
-  Run: mvn test -Dsurefire.suiteXmlFiles=TestNg_Admin.xml
--->
 <suite name="AssetMS Admin Suite" parallel="classes" thread-count="2">
 
     <listeners>
