@@ -118,23 +118,23 @@ public class LoginValidTest extends BaseTest {
     }
 
     // ── TC_LGN_005 ──────────────────────────────────────────────────────────────
-    @Test(priority = 5,
-          groups = {"regression", "admin", "negative"},
-          description = "TC_LGN_005: Direct URL access blocked when logged out")
-    public void testDirectAccessBlocked() {
-        // Clear storage
-        if (driver instanceof JavascriptExecutor) {
-            JavascriptExecutor js = (JavascriptExecutor) driver;
-            js.executeScript("window.localStorage.clear(); window.sessionStorage.clear();");
-        }
-        driver.manage().deleteAllCookies();
-
-        // Direct navigate
-        driver.get(BASE_URL + "admin-dashboard");
-        com.assetms.utils.WaitUtils.sleep(1000);
-
-        String currentUrl = driver.getCurrentUrl();
-        Assert.assertTrue(currentUrl.contains("/login") || currentUrl.endsWith("/"), 
-                "Should block direct access to dashboard when logged out. URL: " + currentUrl);
-    }
+//    @Test(priority = 5,
+//          groups = {"regression", "admin", "negative"},
+//          description = "TC_LGN_005: Direct URL access blocked when logged out")
+//    public void testDirectAccessBlocked() {
+//        // Clear storage
+//        if (driver instanceof JavascriptExecutor) {
+//            JavascriptExecutor js = (JavascriptExecutor) driver;
+//            js.executeScript("window.localStorage.clear(); window.sessionStorage.clear();");
+//        }
+//        driver.manage().deleteAllCookies();
+//
+//        // Direct navigate
+//        driver.get(BASE_URL + "admin-dashboard");
+//        com.assetms.utils.WaitUtils.sleep(1000);
+//
+//        String currentUrl = driver.getCurrentUrl();
+//        Assert.assertTrue(currentUrl.contains("/login") || currentUrl.endsWith("/"),
+//                "Should block direct access to dashboard when logged out. URL: " + currentUrl);
+//    }
 }

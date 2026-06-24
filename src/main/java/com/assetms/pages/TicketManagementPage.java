@@ -8,33 +8,13 @@ import org.openqa.selenium.support.ui.Select;
 
 import java.util.List;
 
-/**
- * TicketManagementPage – Page Object for the Ticket Management screen.
- *
- * Locators derived from ticket-management.component.html.
- *
- * Note: The "Raise Ticket" form is only shown when role === 'EMPLOYEE'.
- *       Admin sees only the "Open Tickets" table with action buttons.
- *
- * Form elements (Employee only):
- *   <select formControlName="assetId" class="input">...</select>
- *   <select formControlName="issueType" class="input">DAMAGED | LOST</select>
- *   <textarea formControlName="issueDescription" ...></textarea>
- *   <button class="btn btn-primary" type="submit">Create Ticket</button>
- *
- * Admin action buttons per row:
- *   DAMAGED + PENDING     → "Start Repair"   → UNDER_REPAIR
- *   DAMAGED + UNDER_REPAIR → "Resolve"       → RESOLVED
- *   DAMAGED + RESOLVED     → "Close"         → CLOSED
- *   LOST + PENDING         → "Under Review"  → UNDER_REVIEW
- *   LOST + UNDER_REVIEW    → "Confirm Lost"  → CLOSED
- */
+
 public class TicketManagementPage {
 
     private final WebDriver driver;
 
     private final By navTicketManagement =
-            By.xpath("//span[normalize-space()='Ticket Management']");
+            By.xpath("/html/body/app-root/div/aside/nav/a[6]");
 
     // ── Page Heading ─────────────────────────────────────────────────────────────
     private final By pageHeading = By.xpath("//h2[normalize-space(text())='Ticket Management']");

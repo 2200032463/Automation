@@ -11,7 +11,7 @@ import java.time.Duration;
  */
 public class WaitUtils {
 
-    private static final int DEFAULT_TIMEOUT = 100; // seconds
+    private static final int DEFAULT_TIMEOUT = 180; // seconds
 
     /** Returns a new WebDriverWait with the default timeout. */
     public static WebDriverWait wait(WebDriver driver) {

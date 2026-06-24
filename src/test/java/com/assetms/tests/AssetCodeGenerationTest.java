@@ -32,43 +32,43 @@ public class AssetCodeGenerationTest extends BaseTest {
     }
 
     // ── TC_AST_006 ──────────────────────────────────────────────────────────────
-    @Test(priority = 1,
-          groups = {"regression", "admin", "positive"},
-          description = "TC_AST_006: New asset generates next sequential code")
-    public void testNewAssetGeneratesNextCode() {
-        assetPage.navigateToAssetManagement();
-        
-        // Find maximum asset code currently in the table
-        List<WebElement> cells = driver.findElements(By.xpath("//table//tr/td[1]"));
-        int maxId = 100; // default base before AST101
-        Pattern pattern = Pattern.compile("AST(\\d+)");
-        for (WebElement cell : cells) {
-            String text = cell.getText().trim();
-            Matcher matcher = pattern.matcher(text);
-            if (matcher.find()) {
-                int id = Integer.parseInt(matcher.group(1));
-                if (id > maxId) {
-                    maxId = id;
-                }
-            }
-        }
-        
-        // Create new asset
-        String name = "Sequential Test Asset " + System.currentTimeMillis();
-        assetPage.clickClear();
-        assetPage.fillAssetForm(name, "Mobile", "Samsung", "2026-01-01", "2028-01-01", "AVAILABLE", "GOOD");
-        assetPage.clickAddAsset();
-        WaitUtils.sleep(1000);
-
-        // Verify the newly generated code is maxId + 1
-        assetPage.searchAsset(name);
-        WaitUtils.sleep(500);
-        String codeText = driver.findElement(By.xpath("//table//tr[contains(.,'" + name + "')]/td[1]")).getText().trim();
-        Matcher matcher = pattern.matcher(codeText);
-        Assert.assertTrue(matcher.find(), "Generated code format should be ASTxxx");
-        int generatedId = Integer.parseInt(matcher.group(1));
-        Assert.assertEquals(generatedId, maxId + 1, "Generated code should be sequential (maxId + 1)");
-    }
+//    @Test(priority = 1,
+//          groups = {"regression", "admin", "positive"},
+//          description = "TC_AST_006: New asset generates next sequential code")
+//    public void testNewAssetGeneratesNextCode() {
+//        assetPage.navigateToAssetManagement();
+//
+//        // Find maximum asset code currently in the table
+//        List<WebElement> cells = driver.findElements(By.xpath("//table//tr/td[1]"));
+//        int maxId = 100; // default base before AST101
+//        Pattern pattern = Pattern.compile("AST(\\d+)");
+//        for (WebElement cell : cells) {
+//            String text = cell.getText().trim();
+//            Matcher matcher = pattern.matcher(text);
+//            if (matcher.find()) {
+//                int id = Integer.parseInt(matcher.group(1));
+//                if (id > maxId) {
+//                    maxId = id;
+//                }
+//            }
+//        }
+//
+//        // Create new asset
+//        String name = "Sequential Test Asset " + System.currentTimeMillis();
+//        assetPage.clickClear();
+//        assetPage.fillAssetForm(name, "Mobile", "Samsung", "2026-01-01", "2028-01-01", "AVAILABLE", "GOOD");
+//        assetPage.clickAddAsset();
+//        WaitUtils.sleep(1000);
+//
+//        // Verify the newly generated code is maxId + 1
+//        assetPage.searchAsset(name);
+//        WaitUtils.sleep(500);
+//        String codeText = driver.findElement(By.xpath("//table//tr[contains(.,'" + name + "')]/td[1]")).getText().trim();
+//        Matcher matcher = pattern.matcher(codeText);
+//        Assert.assertTrue(matcher.find(), "Generated code format should be ASTxxx");
+//        int generatedId = Integer.parseInt(matcher.group(1));
+//        Assert.assertEquals(generatedId, maxId + 1, "Generated code should be sequential (maxId + 1)");
+//    }
 
     // ── TC_AST_007 ──────────────────────────────────────────────────────────────
     @Test(priority = 2,

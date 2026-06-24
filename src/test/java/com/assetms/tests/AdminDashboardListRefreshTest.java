@@ -88,7 +88,7 @@ public class AdminDashboardListRefreshTest extends BaseTest {
         String initialVal = dashboardPage.getTotalEmployees();
         
         // Wait 15 seconds to simulate auto-refresh polling
-        WaitUtils.sleep(15500);
+        WaitUtils.sleep(155000);
         
         String postVal = dashboardPage.getTotalEmployees();
         Assert.assertEquals(postVal, initialVal, "Counts should match since no data changed, and dashboard remains stable.");

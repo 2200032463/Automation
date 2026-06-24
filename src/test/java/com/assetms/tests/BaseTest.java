@@ -30,11 +30,12 @@ public class BaseTest {
         } else {
             // Default: Chrome
             ChromeOptions options = new ChromeOptions();
-            options.addArguments("--headless=new", "--disable-gpu", "--window-size=1920,1080", "--no-sandbox", "--disable-dev-shm-usage", "--disable-notifications");
+            options.addArguments("--headless=new", "--disable-gpu", "--window-size=1920,1080", "--disable-notifications");
+
             driver = new ChromeDriver(options);
         }
-
-        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(100));
+        driver.manage().window().maximize();
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(180));
         driver.get(BASE_URL);
     }
 

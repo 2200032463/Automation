@@ -13,10 +13,18 @@ import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class MyListener implements ITestListener, IInvokedMethodListener {
 
     private static ExtentReports extent;
     private static final ThreadLocal<ExtentTest> testThreadLocal = new ThreadLocal<>();
+    private static final String SCREENSHOT_DIR = "test-output/ExtentReports/screenshots";
 
     @Override
     public void onStart(ITestContext context) {
@@ -57,17 +65,20 @@ public class MyListener implements ITestListener, IInvokedMethodListener {
         if (t != null) {
             t.fail(result.getThrowable());
             
-            // Try to capture and attach a screenshot on failure
+            // Capture and attach a screenshot on failure
             Object testInstance = result.getInstance();
             if (testInstance instanceof BaseTest) {
                 WebDriver driver = ((BaseTest) testInstance).driver;
                 if (driver != null) {
                     try {
-                        TakesScreenshot ts = (TakesScreenshot) driver;
-                        String base64Screenshot = ts.getScreenshotAs(OutputType.BASE64);
-                        t.fail("Failure Screenshot", 
-                                MediaEntityBuilder.createScreenCaptureFromBase64String(base64Screenshot).build());
+                        // Capture screenshot and save to file
+                        String screenshotPath = captureScreenshot(driver, result.getMethod().getMethodName());
+                        if (screenshotPath != null) {
+                            t.addScreenCaptureFromPath(screenshotPath);
+                            System.out.println("Screenshot captured on test failure: " + screenshotPath);
+                        }
                     } catch (Exception e) {
+                        System.err.println("Failed to capture screenshot: " + e.getMessage());
                         t.info("Failed to capture screenshot: " + e.getMessage());
                     }
                 }
@@ -124,6 +135,44 @@ public class MyListener implements ITestListener, IInvokedMethodListener {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Helper method to capture screenshot and save to file system
+     * @param driver WebDriver instance
+     * @param testMethodName The name of the test method
+     * @return The relative path to the saved screenshot file
+     */
+    private String captureScreenshot(WebDriver driver, String testMethodName) {
+        try {
+            // Create screenshots directory if it doesn't exist
+            File screenshotDir = new File(SCREENSHOT_DIR);
+            if (!screenshotDir.exists()) {
+                screenshotDir.mkdirs();
+            }
+
+            // Generate unique filename with timestamp
+            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss_SSS").format(new Date());
+            String fileName = testMethodName + "_" + timestamp + ".png";
+            String filePath = SCREENSHOT_DIR + File.separator + fileName;
+
+            // Capture screenshot
+            TakesScreenshot ts = (TakesScreenshot) driver;
+            File screenshot = ts.getScreenshotAs(OutputType.FILE);
+            
+            // Copy to destination
+            Files.copy(screenshot.toPath(), Paths.get(filePath));
+            
+            // Return relative path for report (works in HTML)
+            return filePath;
+
+        } catch (IOException e) {
+            System.err.println("IOException while capturing screenshot: " + e.getMessage());
+            return null;
+        } catch (Exception e) {
+            System.err.println("Exception while capturing screenshot: " + e.getMessage());
+            return null;
         }
     }
 }
