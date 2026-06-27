@@ -8,15 +8,7 @@ import org.openqa.selenium.support.ui.Select;
 
 import java.util.List;
 
-/**
- * AssetManagementPage – Page Object for the Asset Management screen.
- *
- * Locators derived from asset-management.component.html:
- *   - Form uses [formGroup]="assetForm" with formControlName attributes.
- *   - Categories: Laptop | Mouse | Keyboard | Monitor | Mobile | Charger | Headset
- *   - Statuses  : AVAILABLE | ASSIGNED | OVERDUE | LOST | UNDER_REPAIR | UNASSIGNED
- *   - Conditions: GOOD | FAIR | DAMAGED
- */
+
 public class AssetManagementPage {
 
     private final WebDriver driver;
