@@ -7,9 +7,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-/**
- * TS_TRK_001: Asset Tracking Filters & Search
- */
+
 public class AssetTrackingTest extends BaseTest {
 
     private AssetTrackingPage trackingPage;
@@ -23,7 +21,7 @@ public class AssetTrackingTest extends BaseTest {
         trackingPage.navigateToAssetTracking();
     }
 
-    // ── TC_TRK_001 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 1,
           groups = {"sanity", "regression", "admin", "positive"},
           description = "TC_TRK_001: ALL filter displays complete inventory")
@@ -35,7 +33,7 @@ public class AssetTrackingTest extends BaseTest {
         Assert.assertTrue(rows >= 0, "Table row count under 'All Assets' should be non-negative.");
     }
 
-    // ── TC_TRK_002 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 2,
           groups = {"regression", "admin", "positive"},
           description = "TC_TRK_002: AVAILABLE filter shows only available assets")
@@ -49,21 +47,21 @@ public class AssetTrackingTest extends BaseTest {
         }
     }
 
-    // ── TC_TRK_003 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 3,
           groups = {"regression", "admin", "positive"},
           description = "TC_TRK_003: ASSIGNED and OVERDUE filters show correct subsets")
     public void testAssignedAndOverdueFilters() {
         trackingPage.navigateToAssetTracking();
         
-        // Test ASSIGNED filter
+        
         trackingPage.filterAssigned();
         int rowsAssigned = trackingPage.getTableRowCount();
         if (rowsAssigned > 0) {
             Assert.assertTrue(trackingPage.allRowsHaveStatus("ASSIGNED"), "All rows must have ASSIGNED status");
         }
 
-        // Test OVERDUE filter
+        
         trackingPage.filterOverdue();
         int rowsOverdue = trackingPage.getTableRowCount();
         if (rowsOverdue > 0) {
@@ -71,31 +69,31 @@ public class AssetTrackingTest extends BaseTest {
         }
     }
 
-    // ── TC_TRK_004 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 4,
           groups = {"regression", "admin", "positive"},
           description = "TC_TRK_004: LOST and DAMAGED filters show correct subsets")
     public void testLostAndDamagedFilters() {
         trackingPage.navigateToAssetTracking();
         
-        // Test LOST filter
+        
         trackingPage.filterLost();
         int rowsLost = trackingPage.getTableRowCount();
         if (rowsLost > 0) {
             Assert.assertTrue(trackingPage.allRowsHaveStatus("LOST"), "All rows must have LOST status");
         }
 
-        // Test DAMAGED filter
+        
         trackingPage.filterDamaged();
         int rowsDamaged = trackingPage.getTableRowCount();
         if (rowsDamaged > 0) {
-            // Damaged filter matches status DAMAGED or UNDER_REPAIR
-            // We verify that rows exist after filtering
+            
+            
             Assert.assertTrue(rowsDamaged > 0, "Damaged Assets filter should return results");
         }
     }
 
-    // ── TC_TRK_005 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 5,
           groups = {"regression", "admin", "positive"},
           description = "TC_TRK_005: Text search filters by Asset Name, Code, and Employee")
@@ -108,19 +106,19 @@ public class AssetTrackingTest extends BaseTest {
             return;
         }
 
-        // Search by Code 'AST101'
+        
         trackingPage.searchAsset("AST101");
         int count1 = trackingPage.getTableRowCount();
         Assert.assertTrue(count1 <= totalRows, "Filtered row count should be <= total");
         trackingPage.clearSearch();
 
-        // Search by Name 'Laptop'
+        
         trackingPage.searchAsset("Laptop");
         int count2 = trackingPage.getTableRowCount();
         Assert.assertTrue(count2 <= totalRows, "Filtered row count should be <= total");
         trackingPage.clearSearch();
 
-        // Search by Employee 'Carter'
+        
         trackingPage.searchAsset("Carter");
         int count3 = trackingPage.getTableRowCount();
         Assert.assertTrue(count3 <= totalRows, "Filtered row count should be <= total");

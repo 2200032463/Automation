@@ -2,6 +2,7 @@ package com.assetms.pages;
 
 import com.assetms.utils.WaitUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -10,32 +11,33 @@ public class EmployeeManagementPage {
 
     private final WebDriver driver;
 
-    // ── Navigation ────────────────────────────────────────────────────────────────
+    
+    
     private final By navEmployeeManagement =
-            By.xpath("//html/body/app-root/div/aside/nav/a[2]");
+            By.xpath("//span[normalize-space()='Employee Management']");
 
-    // ── Page Elements ─────────────────────────────────────────────────────────────
+    
     private final By pageHeading  = By.xpath("//h2[normalize-space(text())='Employee Management']");
     private final By searchInput  = By.cssSelector("input.input[placeholder='Search by Employee Name, ID, Role']");
     private final By pageMessage  = By.cssSelector("p.info");
 
-    // ── Table ─────────────────────────────────────────────────────────────────────
-    // All data rows (skipping header)
-    private final By tableRows    = By.cssSelector("table tr:not(:first-child)");
+    
+    
+    private final By tableRows = By.cssSelector("table tr:not(:first-child)");
 
-    // ── Constructor ───────────────────────────────────────────────────────────────
+    
     public EmployeeManagementPage(WebDriver driver) {
         this.driver = driver;
     }
 
-    // ── Navigation ─────────────────────────────────────────────────────────────────
+    
 
     public void navigateToEmployeeManagement() {
         WaitUtils.click(driver, navEmployeeManagement);
         WaitUtils.waitForVisible(driver, pageHeading);
     }
 
-    // ── Verifications ───────────────────────────────────────────────────────────────
+    
 
     public String getPageHeading() {
         return WaitUtils.waitForVisible(driver, pageHeading).getText();
@@ -45,25 +47,74 @@ public class EmployeeManagementPage {
         return WaitUtils.isPresent(driver, pageHeading);
     }
 
-    // ── Search ─────────────────────────────────────────────────────────────────────
+    
 
+    
     public void searchEmployee(String searchText) {
-        WaitUtils.type(driver, searchInput, searchText);
+        
+        WebElement field = WaitUtils.waitForClickable(driver, searchInput);
+        field.click();
+        field.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+        field.sendKeys(Keys.chord(Keys.COMMAND, "a"));
+        field.sendKeys(Keys.DELETE);
+
+        
+        if (searchText != null && !searchText.isEmpty()) {
+            field.clear();
+            field.sendKeys(searchText);
+        }
+
+        
+        WaitUtils.waitForCondition(driver, d -> {
+            int before = d.findElements(tableRows).size();
+            try { Thread.sleep(300); } catch (InterruptedException ignored) {}
+            int after = d.findElements(tableRows).size();
+            return before == after;
+        }, 5);
     }
 
+    
     public void clearSearch() {
-        WaitUtils.waitForVisible(driver, searchInput).clear();
+        WebElement field = WaitUtils.waitForClickable(driver, searchInput);
+        field.click();
+        field.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+        field.sendKeys(Keys.chord(Keys.COMMAND, "a"));
+        field.sendKeys(Keys.DELETE);
+        
+        WaitUtils.waitForCondition(driver, d -> {
+            int before = d.findElements(tableRows).size();
+            try { Thread.sleep(300); } catch (InterruptedException ignored) {}
+            int after = d.findElements(tableRows).size();
+            return before == after && after > 0;
+        }, 5);
     }
 
-    // ── Table Helpers ───────────────────────────────────────────────────────────────
+    
 
-    /** Total visible employee data rows (excludes the header row). */
+    
     public int getEmployeeTableRowCount() {
-        return driver.findElements(tableRows).size();
+        List<WebElement> rows = driver.findElements(tableRows);
+        if(rows.isEmpty())
+        {
+            return 0;
+        }
+        return rows.size();
+
     }
 
-    /** Checks if any row contains the given search term anywhere in its text. */
+    
     public boolean isEmployeeVisible(String nameOrId) {
+        
+        try {
+            WaitUtils.waitForCondition(driver,
+                    d -> !d.findElements(tableRows).isEmpty(), 5);
+        } catch (Exception ignored) {
+            
+        }
+        WebElement element = driver.findElement(searchInput);
+        element.clear();
+        element.sendKeys(nameOrId);
+
         List<WebElement> rows = driver.findElements(tableRows);
         for (WebElement row : rows) {
             if (row.getText().toLowerCase().contains(nameOrId.toLowerCase())) {
@@ -73,7 +124,7 @@ public class EmployeeManagementPage {
         return false;
     }
 
-    /** Clicks "View Details" for the first row matching the given name. */
+    
     public void clickViewDetails(String employeeName) {
         List<WebElement> rows = driver.findElements(tableRows);
         for (WebElement row : rows) {
@@ -85,25 +136,24 @@ public class EmployeeManagementPage {
         throw new RuntimeException("Employee not found: " + employeeName);
     }
 
-    /** Clicks "Delete" for the first row matching the given name. */
-    public void clickDeleteEmployee(String employeeName) {
+    
+    public void clickDeleteEmployee(String employeeName) throws InterruptedException {
+        WebElement element = driver.findElement(searchInput);
+        element.clear();
+        element.sendKeys(employeeName);
+        Thread.sleep(3000);
         List<WebElement> rows = driver.findElements(tableRows);
         for (WebElement row : rows) {
             if (row.getText().contains(employeeName)) {
-                row.findElement(By.cssSelector("button.btn-danger")).click();
+                System.out.println(row.getText());
+                row.findElement(By.xpath("/html/body/app-root/div/main/div/app-employee-management/section/div/table/tr[2]/td[6]/button[2]")).click();
                 return;
             }
         }
         throw new RuntimeException("Employee not found: " + employeeName);
     }
 
-    /**
-     * Gets the column value (0-based) from the first row whose any column
-     * text matches the given identifier.
-     *
-     * @param identifier  Employee name or ID to find the row.
-     * @param colIndex    0-based column index (0=EmployeeID, 1=Name, etc.).
-     */
+    
     public String getCellValue(String identifier, int colIndex) {
         List<WebElement> rows = driver.findElements(tableRows);
         for (WebElement row : rows) {
@@ -117,7 +167,7 @@ public class EmployeeManagementPage {
         return "";
     }
 
-    /** Returns the info/error message shown on the page. */
+    
     public String getMessage() {
         if (WaitUtils.isPresent(driver, pageMessage)) {
             return driver.findElement(pageMessage).getText();

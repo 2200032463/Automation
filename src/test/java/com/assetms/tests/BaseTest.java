@@ -14,10 +14,6 @@ public class BaseTest {
 
     protected WebDriver driver;
     protected final String BASE_URL = "https://assets-management-sandy.vercel.app/";
-
-    // ── Driver Initialisation ─────────────────────────────────────────────────────
-    // @BeforeClass runs ONCE per test class.
-    // The parent's @BeforeClass always runs before the child's @BeforeClass.
     @BeforeClass(alwaysRun = true)
     @Parameters(value = {"browser"})
     public void setUp(@Optional("chrome") String browser) {
@@ -28,9 +24,9 @@ public class BaseTest {
             options.addArguments("--headless=new", "--disable-gpu", "--window-size=1920,1080", "--disable-notifications");
             driver = new EdgeDriver(options);
         } else {
-            // Default: Chrome
+            
             ChromeOptions options = new ChromeOptions();
-            options.addArguments("--headless=new", "--disable-gpu", "--window-size=1920,1080", "--disable-notifications");
+            options.addArguments("--headless");
 
             driver = new ChromeDriver(options);
         }
@@ -39,7 +35,7 @@ public class BaseTest {
         driver.get(BASE_URL);
     }
 
-    // ── Driver Teardown ───────────────────────────────────────────────────────────
+    
     @AfterClass(alwaysRun = true)
     public void tearDown() {
         if (driver != null) {

@@ -2,7 +2,7 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
 
-<suite name="AssetMS Full Regression Suite" parallel="classes" thread-count="10">
+<suite name="AssetMS Full Regression Suite" parallel="classes" thread-count="3">
 
     <listeners>
         <listener class-name="com.assetms.tests.MyListener"/>
@@ -11,7 +11,6 @@
     <test name="Regression Tests - Chrome">
         <parameter name="browser" value="chrome"/>
 
-        <!-- Run ONLY tests in the 'regression' group -->
         <groups>
             <run>
                 <include name="regression"/>

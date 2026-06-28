@@ -4,12 +4,10 @@ import com.assetms.pages.LoginPage;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-/**
- * TS_LGN_002: Invalid Login Handling
- */
+
 public class LoginInvalidTest extends BaseTest {
 
-    // ── TC_LGN_006 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 1,
             groups = {"regression", "negative"},
             description = "TC_LGN_006: Login with wrong password")
@@ -25,7 +23,7 @@ public class LoginInvalidTest extends BaseTest {
                 "Should stay on login page after wrong password.");
     }
 
-    // ── TC_LGN_007 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 2,
             groups = {"regression", "negative"},
             description = "TC_LGN_007: Login with non-existent email")
@@ -41,7 +39,7 @@ public class LoginInvalidTest extends BaseTest {
                 "Should stay on login page.");
     }
 
-    // ── TC_LGN_008 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 3,
             groups = {"regression", "negative"},
             description = "TC_LGN_008: Login with empty email and password")
@@ -50,13 +48,13 @@ public class LoginInvalidTest extends BaseTest {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.clickLogin();
 
-        // Form submission is blocked or staying on login page
+        
         String msg = loginPage.getMessage();
         Assert.assertTrue(driver.getCurrentUrl().contains("/login") || driver.getCurrentUrl().endsWith("/"),
                 "Should stay on login page.");
     }
 
-    // ── TC_LGN_009 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 4,
             groups = {"regression", "negative"},
             description = "TC_LGN_009: Login with invalid email format")
@@ -65,19 +63,19 @@ public class LoginInvalidTest extends BaseTest {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login("john.company.com", "john123");
 
-        // HTML5 validation or application validation should reject
+        
         Assert.assertTrue(driver.getCurrentUrl().contains("/login") || driver.getCurrentUrl().endsWith("/"),
                 "Should stay on login page with invalid email format.");
     }
 
-    // ── TC_LGN_010 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 5,
             groups = {"regression", "negative"},
             description = "TC_LGN_010: Login with case-sensitive password mismatch")
     public void testCaseSensitivePassword() {
         driver.get(BASE_URL);
         LoginPage loginPage = new LoginPage(driver);
-        loginPage.login("admin@gmail.com", "ADMIN123"); // uppercase
+        loginPage.login("admin@gmail.com", "ADMIN123"); 
 
         String msg = loginPage.getMessage();
         Assert.assertTrue(msg.toLowerCase().contains("invalid") || msg.toLowerCase().contains("credentials") || msg.toLowerCase().contains("error"),

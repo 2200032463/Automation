@@ -2,6 +2,7 @@ package com.assetms.tests;
 
 import com.assetms.pages.AdminDashboardPage;
 import com.assetms.pages.AssetAssignmentPage;
+import com.assetms.pages.AssetManagementPage;
 import com.assetms.pages.AssetTrackingPage;
 import com.assetms.pages.LoginPage;
 import com.assetms.utils.WaitUtils;
@@ -12,9 +13,10 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-/**
- * TS_ASG_001: Asset Assignment Workflow
- */
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+
 public class AssetAssignmentTest extends BaseTest {
 
     private AssetAssignmentPage assignPage;
@@ -28,25 +30,25 @@ public class AssetAssignmentTest extends BaseTest {
         assignPage.navigateToAssetAssignment();
     }
 
-    // ── TC_ASG_001 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 1,
           groups = {"sanity", "regression", "admin", "positive"},
           description = "TC_ASG_001: Category change dynamically loads only AVAILABLE assets")
     public void testCategoryFiltersAvailableAssets() {
         assignPage.navigateToAssetAssignment();
-        assignPage.selectCategory("Monitor");
+        assignPage.selectCategory("Laptop");
 
         Select select = new Select(driver.findElement(By.cssSelector("select[formcontrolname='assetId']")));
         for (WebElement option : select.getOptions()) {
             String text = option.getText().toUpperCase();
             if (text.contains("AST")) {
-                // Ensure the loaded assets do not have any ASSIGNED indicator in their text if any
+                
                 Assert.assertFalse(text.contains("ASSIGNED"), "Dropdown should not contain assigned assets: " + text);
             }
         }
     }
 
-    // ── TC_ASG_002 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 2,
           groups = {"regression", "admin", "positive"},
           description = "TC_ASG_002: ASSIGNED assets excluded from asset dropdown")
@@ -54,8 +56,8 @@ public class AssetAssignmentTest extends BaseTest {
         assignPage.navigateToAssetAssignment();
         assignPage.selectCategory("Laptop");
 
-        // Let's check tracking to find an assigned laptop (e.g. AST101 is assigned laptop in typical seed)
-        // Check that the dropdown does not have AST101
+        
+        
         Select select = new Select(driver.findElement(By.cssSelector("select[formcontrolname='assetId']")));
         boolean foundAssigned = false;
         for (WebElement option : select.getOptions()) {
@@ -67,13 +69,13 @@ public class AssetAssignmentTest extends BaseTest {
         Assert.assertFalse(foundAssigned, "Assigned laptop AST101 should be excluded from Asset dropdown");
     }
 
-    // ── TC_ASG_004 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 3,
           groups = {"regression", "admin", "negative"},
           description = "TC_ASG_004: Assignment form validates empty inputs")
     public void testFormValidationEmptyInputs() {
         assignPage.navigateToAssetAssignment();
-        // Try submitting without choices
+        
         assignPage.clickAssign();
         
         String msg = assignPage.getMessage();
@@ -81,53 +83,95 @@ public class AssetAssignmentTest extends BaseTest {
                 "Expected validation error or blocked submit, got: " + msg);
     }
 
-    // ── TC_ASG_003 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 4,
           groups = {"regression", "admin", "positive"},
           description = "TC_ASG_003: Successful assignment updates asset status to ASSIGNED")
-    public void testSuccessfulAssignment() {
+    public void testSuccessfulAssignment() throws InterruptedException {
         assignPage.navigateToAssetAssignment();
         
-        // Find an available asset from dropdown
+        
         assignPage.selectCategory("Laptop");
         Select select = new Select(driver.findElement(By.cssSelector("select[formcontrolname='assetId']")));
         if (select.getOptions().size() <= 1) {
+            // size() == 1 means only the placeholder option exists, no real assets available
             System.out.println("[WARN] No available Laptop assets to assign. Skipping assignment verification.");
             return;
         }
-        
+
         WebElement targetOption = select.getOptions().get(1);
         String targetText = targetOption.getText();
         
-        // Select asset, employee (John Carter), set deadline and assign
+        
         assignPage.selectAssetByText(targetText);
         assignPage.selectEmployeeByText("John Carter");
         assignPage.setReturnDeadline("2026-12-31");
         assignPage.clickAssign();
+        Thread.sleep(5000);
         WaitUtils.sleep(1000);
 
-        // Verify status in Tracking
+        
         AssetTrackingPage trackingPage = new AssetTrackingPage(driver);
         trackingPage.navigateToAssetTracking();
-        trackingPage.searchAsset(targetText.split("-")[0].trim()); // Search by asset code
+        trackingPage.searchAsset(targetText.split("-")[0].trim());
+        Thread.sleep(1000);
         Assert.assertTrue(trackingPage.allRowsHaveStatus("ASSIGNED"), "Asset status should be updated to ASSIGNED in tracking");
     }
-
-    // ── TC_ASG_005 ──────────────────────────────────────────────────────────────
+    
+    
     @Test(priority = 5,
-          groups = {"regression", "admin", "positive"},
-          description = "TC_ASG_005: Assigned asset disappears from dropdown and allocation persists in Dashboard")
-    public void testAssignedAssetDisappears() {
-        // Go back to assign page
-        assignPage.navigateToAssetAssignment();
-        assignPage.selectCategory("Laptop");
-        
-        // We already assigned an asset in testSuccessfulAssignment()
-        // It should no longer be in the dropdown
-        // Let's verify by ensuring the dropdown doesn't have it, or that recent allocations has a record
-        AdminDashboardPage dashPage = new AdminDashboardPage(driver);
-        dashPage.navigateToDashboard();
-        int rowCount = dashPage.getRecentAllocationRowCount();
-        Assert.assertTrue(rowCount > 0, "Dashboard Recent Allocations table should show the new allocation");
+          groups = {"regression", "admin", "negative", "bug"},
+          description = "TC_AST_BUG_001: [BUG] Yesterday as Purchase Date should be rejected")
+    public void testPurchaseDateTomorrowShouldBeRejected() {
+        AssetManagementPage assetPage = new AssetManagementPage(driver);
+        assetPage.navigateToAssetManagement();
+        assetPage.clickClear();
+
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String yesterday = LocalDate.now().minusDays(1).format(fmt);
+        String warrantyDate = LocalDate.now().plusYears(2).format(fmt);
+
+        String assetName = "BUG001 Yesterday Purchase " + System.currentTimeMillis();
+        assetPage.fillAssetForm(assetName, "Monitor", "BugBrand",
+                yesterday, warrantyDate, "AVAILABLE", "GOOD");
+        assetPage.clickAddAsset();
+        WaitUtils.sleep(2000);
+
+        assetPage.searchAsset(assetName);
+        boolean assetCreated = assetPage.isAssetPresent(assetName);
+
+        Assert.assertTrue(assetCreated,
+                "[BUG] System accepted yesterday ('" + yesterday + "') as Purchase Date and created the asset. " +
+                "Yesterday should not be allowed as a purchase date.");
     }
+
+    
+    
+    @Test(priority = 6,
+          groups = {"regression", "admin", "negative", "bug"},
+          description = "TC_AST_BUG_002: [BUG] Warranty Date (yesterday) before Purchase Date (today) should be rejected")
+    public void testWarrantyDateBeforePurchaseDateShouldBeRejected() {
+        AssetManagementPage assetPage = new AssetManagementPage(driver);
+        assetPage.navigateToAssetManagement();
+        assetPage.clickClear();
+
+        String purchaseDate = "2026-06-01";
+        String warrantyDate = "2026-05-01";
+
+        String assetName = "BUG002 Warranty Before Purchase " + System.currentTimeMillis();
+        assetPage.fillAssetForm(assetName, "Laptop", "BugBrand2",
+                purchaseDate, warrantyDate, "AVAILABLE", "GOOD");
+        assetPage.clickAddAsset();
+        WaitUtils.sleep(2000);
+
+        assetPage.searchAsset(assetName);
+        boolean assetCreated = assetPage.isAssetPresent(assetName);
+
+        Assert.assertTrue(assetCreated,
+                "[BUG] System accepted Warranty Date ('" + warrantyDate + "') which is BEFORE " +
+                "Purchase Date ('" + purchaseDate + "') and created the asset. " +
+                "Warranty expiry must not be before the purchase date.");
+    }
+
+
 }

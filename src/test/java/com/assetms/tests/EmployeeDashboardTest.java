@@ -6,9 +6,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-/**
- * TS_EDH_001: Employee Dashboard & Details
- */
+
 public class EmployeeDashboardTest extends BaseTest {
 
     private EmployeeDashboardPage dashboardPage;
@@ -22,7 +20,7 @@ public class EmployeeDashboardTest extends BaseTest {
         dashboardPage.navigateToEmployeeDashboard();
     }
 
-    // ── TC_EDH_001 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 1,
           groups = {"sanity", "regression", "employee", "positive"},
           description = "TC_EDH_001: Profile card shows authenticated employee data")
@@ -42,7 +40,7 @@ public class EmployeeDashboardTest extends BaseTest {
         Assert.assertTrue(emailText.contains("john.carter@company.com"), "Email should be john.carter@company.com, got: " + emailText);
     }
 
-    // ── TC_EDH_002 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 2,
           groups = {"regression", "employee", "positive"},
           description = "TC_EDH_002: Assigned Assets section shows active allocations")
@@ -53,7 +51,7 @@ public class EmployeeDashboardTest extends BaseTest {
         Assert.assertTrue(count >= 0, "Assigned assets count should be >= 0. Got: " + count);
     }
 
-    // ── TC_EDH_003 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 3,
           groups = {"regression", "employee", "positive"},
           description = "TC_EDH_003: Return History shows completed returns")
@@ -64,7 +62,7 @@ public class EmployeeDashboardTest extends BaseTest {
         Assert.assertTrue(count >= 0, "Return History count should be >= 0. Got: " + count);
     }
 
-    // ── TC_EDH_004 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 4,
           groups = {"regression", "employee", "positive"},
           description = "TC_EDH_004: Overdue History displays items past deadline")
@@ -75,7 +73,7 @@ public class EmployeeDashboardTest extends BaseTest {
         Assert.assertTrue(count >= 0, "Overdue History count should be >= 0. Got: " + count);
     }
 
-    // ── TC_EDH_005 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 5,
           groups = {"regression", "employee", "positive"},
           description = "TC_EDH_005: Ticket History lists all tickets raised by employee")

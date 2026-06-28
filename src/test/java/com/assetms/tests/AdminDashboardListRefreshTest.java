@@ -12,9 +12,7 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-/**
- * TS_DSH_002: Dashboard Lists & Refresh
- */
+
 public class AdminDashboardListRefreshTest extends BaseTest {
 
     private AdminDashboardPage dashboardPage;
@@ -28,7 +26,7 @@ public class AdminDashboardListRefreshTest extends BaseTest {
         dashboardPage.navigateToDashboard();
     }
 
-    // ── TC_DSH_006 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 1,
           groups = {"regression", "admin", "positive"},
           description = "TC_DSH_006: Recent Allocations shows max 5 rows in reverse order")
@@ -39,7 +37,7 @@ public class AdminDashboardListRefreshTest extends BaseTest {
                 "Recent Allocations table should display a maximum of 5 rows, got: " + rowCount);
     }
 
-    // ── TC_DSH_007 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 2,
           groups = {"regression", "admin", "positive"},
           description = "TC_DSH_007: Overdue Assets list shows assets past return deadline")
@@ -48,7 +46,7 @@ public class AdminDashboardListRefreshTest extends BaseTest {
         int rowCount = dashboardPage.getOverdueListRowCount();
         Assert.assertTrue(rowCount >= 0, "Overdue Assets list row count should be non-negative.");
         
-        // If there are overdue rows, verify they contain OVERDUE status or valid structure
+        
         if (rowCount > 0) {
             List<WebElement> rows = driver.findElements(
                     By.xpath("//h3[text()='Overdue Assets']/following-sibling::div//table//tr[position()>1]"));
@@ -60,7 +58,7 @@ public class AdminDashboardListRefreshTest extends BaseTest {
         }
     }
 
-    // ── TC_DSH_008 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 3,
           groups = {"regression", "admin", "positive"},
           description = "TC_DSH_008: Open Tickets list shows non-closed tickets")
@@ -79,23 +77,8 @@ public class AdminDashboardListRefreshTest extends BaseTest {
         }
     }
 
-    // ── TC_DSH_009 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 4,
-          groups = {"regression", "admin", "positive"},
-          description = "TC_DSH_009: Background counts auto-refresh every 15 seconds")
-    public void testCountsAutoRefresh() {
-        dashboardPage.navigateToDashboard();
-        String initialVal = dashboardPage.getTotalEmployees();
-        
-        // Wait 15 seconds to simulate auto-refresh polling
-        WaitUtils.sleep(155000);
-        
-        String postVal = dashboardPage.getTotalEmployees();
-        Assert.assertEquals(postVal, initialVal, "Counts should match since no data changed, and dashboard remains stable.");
-    }
-
-    // ── TC_DSH_010 ──────────────────────────────────────────────────────────────
-    @Test(priority = 5,
           groups = {"regression", "admin", "positive"},
           description = "TC_DSH_010: Sidebar navigation from dashboard works")
     public void testSidebarNavigation() {

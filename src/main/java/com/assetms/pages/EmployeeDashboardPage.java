@@ -9,21 +9,21 @@ public class EmployeeDashboardPage {
 
     private final WebDriver driver;
 
-    // ── Navigation ────────────────────────────────────────────────────────────────
+    
     private final By navMyDashboard =
             By.xpath("/html/body/app-root/div/aside/nav/a[2]");
 
-    // ── Page Heading ─────────────────────────────────────────────────────────────
+    
     private final By pageHeading = By.xpath("//h2[normalize-space(text())='Employee Dashboard']");
 
-    // ── Profile Card ─────────────────────────────────────────────────────────────
+    
     private final By profileSection   = By.xpath("//h3[normalize-space(text())='My Profile']/..");
     private final By profileName      = By.xpath("//p[strong[text()='Name:']]");
     private final By profileEmpId     = By.xpath("//p[strong[text()='Employee ID:']]");
     private final By profileDept      = By.xpath("//p[strong[text()='Department:']]");
     private final By profileEmail     = By.xpath("//p[strong[text()='Email:']]");
 
-    // ── Section Tables ─────────────────────────────────────────────────────────────
+    
     private final By assignedAssetsRows =
             By.xpath("//h3[text()='Assigned Assets']/following-sibling::div//table//tr[position()>1]");
     private final By returnHistoryRows  =
@@ -33,19 +33,19 @@ public class EmployeeDashboardPage {
     private final By ticketHistoryRows  =
             By.xpath("//h3[text()='Ticket History']/following-sibling::div//table//tr[position()>1]");
 
-    // ── Constructor ───────────────────────────────────────────────────────────────
+    
     public EmployeeDashboardPage(WebDriver driver) {
         this.driver = driver;
     }
 
-    // ── Navigation ─────────────────────────────────────────────────────────────────
+    
 
     public void navigateToEmployeeDashboard() {
         WaitUtils.click(driver, navMyDashboard);
         WaitUtils.waitForVisible(driver, pageHeading);
     }
 
-    // ── Verifications ───────────────────────────────────────────────────────────────
+    
 
     public String getPageHeading() {
         return WaitUtils.waitForVisible(driver, pageHeading).getText();
@@ -64,9 +64,9 @@ public class EmployeeDashboardPage {
         }
     }
 
-    // ── Profile Fields ────────────────────────────────────────────────────────────
+    
 
-    /** Returns full text like "Name: John Doe" */
+    
     public String getProfileName() {
         return WaitUtils.waitForVisible(driver, profileName).getText();
     }
@@ -83,7 +83,7 @@ public class EmployeeDashboardPage {
         return WaitUtils.waitForVisible(driver, profileEmail).getText();
     }
 
-    // ── Table Row Counts ──────────────────────────────────────────────────────────
+    
 
     public int getAssignedAssetsCount() {
         return driver.findElements(assignedAssetsRows).size();

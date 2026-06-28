@@ -13,13 +13,14 @@ public class TicketManagementPage {
 
     private final WebDriver driver;
 
+    
     private final By navTicketManagement =
-            By.xpath("/html/body/app-root/div/aside/nav/a[6]");
+            By.xpath("//span[normalize-space()='Ticket Management']");
 
-    // ── Page Heading ─────────────────────────────────────────────────────────────
-    private final By pageHeading = By.xpath("//h2[normalize-space(text())='Ticket Management']");
+    
+    private final By pageHeading = By.xpath("/html/body/app-root/div/main/div/app-ticket-management/section/h2");
 
-    // ── Raise Ticket Form (Employee) ──────────────────────────────────────────────
+    
     private final By raiseTicketSection = By.xpath("//h3[normalize-space(text())='Raise Ticket']");
     private final By assetIdSelect      = By.cssSelector("select[formcontrolname='assetId']");
     private final By issueTypeSelect    = By.cssSelector("select[formcontrolname='issueType']");
@@ -27,22 +28,30 @@ public class TicketManagementPage {
     private final By createTicketButton = By.cssSelector("button[type='submit']");
     private final By formMessage        = By.cssSelector("p.info");
 
-    // ── Tickets Table (Both Roles) ────────────────────────────────────────────────
+    
     private final By tableRows = By.cssSelector(".table-wrap table tr:not(:first-child)");
 
-    // ── Constructor ───────────────────────────────────────────────────────────────
+    
     public TicketManagementPage(WebDriver driver) {
         this.driver = driver;
     }
 
-    // ── Navigation ─────────────────────────────────────────────────────────────────
+    
 
     public void navigateToTicketManagement() {
         WaitUtils.click(driver, navTicketManagement);
         WaitUtils.waitForVisible(driver, pageHeading);
+        
+        
+        try {
+            WaitUtils.waitForCondition(driver,
+                d -> !d.findElements(tableRows).isEmpty(), 10);
+        } catch (Exception ignored) {
+            
+        }
     }
 
-    // ── Verifications ───────────────────────────────────────────────────────────────
+    
 
     public String getPageHeading() {
         return WaitUtils.waitForVisible(driver, pageHeading).getText();
@@ -56,49 +65,50 @@ public class TicketManagementPage {
         return WaitUtils.isPresent(driver, raiseTicketSection);
     }
 
-    // ── Raise Ticket (Employee) ───────────────────────────────────────────────────
+    
 
-    /**
-     * Selects the asset from the Asset ID dropdown by matching text.
-     * Option text format: "AST101 - Dell Laptop"
-     */
+    
     public void selectAsset(String assetText) {
-        Select select = new Select(WaitUtils.waitForVisible(driver, assetIdSelect));
-        for (var option : select.getOptions()) {
-            if (option.getText().contains(assetText)) {
-                option.click();
-                return;
+        driver.findElement(assetIdSelect).click();
+        Select select;
+        WaitUtils.waitForCondition(driver,
+            d -> new Select(d.findElement(assetIdSelect)).getOptions().size() > 1, 10);
+        select = new Select(driver.findElement(assetIdSelect));
+
+        if (assetText != null && !assetText.isEmpty()) {
+            for (var option : select.getOptions()) {
+                if (option.getText().contains(assetText)) {
+                    option.click();
+                    return;
+                }
             }
         }
-        // Fall back to first non-placeholder
+        
         if (select.getOptions().size() > 1) {
             select.selectByIndex(1);
         }
     }
+    public void selectAssetdynamic() {
+        Select select = new Select(WaitUtils.waitForVisible(driver, assetIdSelect));
+        select.selectByIndex(1);
+    }
 
-    /**
-     * Selects issue type: "DAMAGED" or "LOST".
-     */
+    
     public void selectIssueType(String issueType) {
         new Select(WaitUtils.waitForVisible(driver, issueTypeSelect)).selectByValue(issueType);
     }
 
-    /**
-     * Types the issue description in the textarea.
-     * Minimum 10 characters required by the Angular validator.
-     */
+    
     public void enterIssueDescription(String description) {
         WaitUtils.type(driver, issueDescription, description);
     }
 
-    /** Clicks the "Create Ticket" button. */
+    
     public void clickCreateTicket() {
         WaitUtils.click(driver, createTicketButton);
     }
 
-    /**
-     * Full workflow to raise a ticket (Employee role only).
-     */
+    
     public void raiseTicket(String assetText, String issueType, String description) {
         selectAsset(assetText);
         selectIssueType(issueType);
@@ -106,44 +116,55 @@ public class TicketManagementPage {
         clickCreateTicket();
     }
 
-    /** Returns the success/error message shown on the form. */
+    
     public String getFormMessage() {
         return WaitUtils.waitForText(driver, formMessage);
     }
 
-    // ── Admin Actions ─────────────────────────────────────────────────────────────
+    
 
-    /**
-     * Clicks the given action button in the row that contains the ticketId text.
-     *
-     * @param ticketId      Ticket ID (partial match on row text).
-     * @param buttonText    "Start Repair" | "Resolve" | "Close" | "Under Review" | "Confirm Lost"
-     */
+    
     public void clickActionForTicket(String ticketId, String buttonText) {
+        
         List<WebElement> rows = driver.findElements(tableRows);
         for (WebElement row : rows) {
             if (row.getText().contains(ticketId)) {
                 List<WebElement> buttons = row.findElements(By.tagName("button"));
                 for (WebElement btn : buttons) {
                     if (btn.getText().equalsIgnoreCase(buttonText)) {
+                        
+                        
+                        ((org.openqa.selenium.JavascriptExecutor) driver)
+                            .executeScript("arguments[0].scrollIntoView({block:'center'});", btn);
+                        WaitUtils.waitForCondition(driver,
+                            d -> btn.isDisplayed() && btn.isEnabled(), 5);
                         btn.click();
                         return;
                     }
                 }
+                throw new RuntimeException(
+                    "Action button '" + buttonText + "' not found in row for ticket: " + ticketId +
+                    ". Available buttons: " + buttons.stream()
+                        .map(WebElement::getText).toList());
             }
         }
-        throw new RuntimeException("Action button '" + buttonText + "' not found for ticket: " + ticketId);
+        throw new RuntimeException("Ticket '" + ticketId + "' not found in the table");
     }
 
-    // ── Table Helpers ───────────────────────────────────────────────────────────────
+    
 
-    /** Total number of visible ticket rows. */
+    
     public int getTicketRowCount() {
         return driver.findElements(tableRows).size();
     }
 
-    /** Returns true if any row contains the given text (e.g. ticket ID). */
+    
     public boolean isTicketPresent(String text) {
+        
+        try {
+            WaitUtils.waitForCondition(driver,
+                d -> !d.findElements(tableRows).isEmpty(), 10);
+        } catch (Exception ignored) {}
         List<WebElement> rows = driver.findElements(tableRows);
         for (WebElement row : rows) {
             if (row.getText().toLowerCase().contains(text.toLowerCase())) return true;
@@ -151,10 +172,7 @@ public class TicketManagementPage {
         return false;
     }
 
-    /**
-     * Gets the status cell text from the row matching the given ticket ID.
-     * Status column is column index 5 (0-based).
-     */
+    
     public String getTicketStatus(String ticketId) {
         List<WebElement> rows = driver.findElements(tableRows);
         for (WebElement row : rows) {
@@ -167,4 +185,22 @@ public class TicketManagementPage {
         }
         return "";
     }
+
+    
+    public String waitForTicketStatus(String ticketId, String expectedStatus, int timeoutSeconds) {
+        WaitUtils.waitForCondition(driver, d -> {
+            List<WebElement> rows = d.findElements(tableRows);
+            for (WebElement row : rows) {
+                if (row.getText().contains(ticketId)) {
+                    List<WebElement> cells = row.findElements(By.tagName("td"));
+                    if (cells.size() > 5) {
+                        return expectedStatus.equalsIgnoreCase(cells.get(5).getText());
+                    }
+                }
+            }
+            return false;
+        }, timeoutSeconds);
+        return getTicketStatus(ticketId);
+    }
+
 }

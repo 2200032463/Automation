@@ -8,9 +8,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-/**
- * TS_DSH_001: Admin Dashboard Metrics
- */
+
 public class AdminDashboardMetricsTest extends BaseTest {
 
     private AdminDashboardPage dashboardPage;
@@ -24,24 +22,22 @@ public class AdminDashboardMetricsTest extends BaseTest {
         dashboardPage.navigateToDashboard();
     }
 
-    // ── TC_DSH_001 ──────────────────────────────────────────────────────────────
-    @Test(priority = 1,
-          groups = {"regression", "admin", "positive"},
-          description = "TC_DSH_001: Total Employees count matches DB")
-    public void testTotalEmployeesCount() {
+    @Test(priority = 1,groups = {"regression", "admin", "positive"})
+    public void validateStatAssetsCount()
+    {
         dashboardPage.navigateToDashboard();
-        String dashboardCountStr = dashboardPage.getTotalEmployees();
-        int dashboardCount = Integer.parseInt(dashboardCountStr.trim());
-
-        EmployeeManagementPage empPage = new EmployeeManagementPage(driver);
-        empPage.navigateToEmployeeManagement();
-        int actualCount = empPage.getEmployeeTableRowCount();
-
-        Assert.assertEquals(dashboardCount, actualCount, 
-                "Dashboard Total Employees count should match Employee Management table row count");
+        int totalAssets = Integer.parseInt(dashboardPage.getTotalAssets());
+        int AssignedAssets = Integer.parseInt(dashboardPage.getAssignedAssets());
+        int availableAssets = Integer.parseInt(dashboardPage.getAvailableAssets());
+        boolean match = false;
+        if(totalAssets == AssignedAssets+availableAssets)
+        {
+            match=true;
+        }
+        Assert.assertTrue(match,"Missmatch");
     }
 
-    // ── TC_DSH_002 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 2,
           groups = {"regression", "admin", "positive"},
           description = "TC_DSH_002: Total Assets count matches DB")
@@ -59,7 +55,7 @@ public class AdminDashboardMetricsTest extends BaseTest {
                 "Dashboard Total Assets count should match Asset Tracking All Assets count");
     }
 
-    // ── TC_DSH_003 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 3,
           groups = {"regression", "admin", "positive"},
           description = "TC_DSH_003: Available Assets count matches DB")
@@ -77,7 +73,7 @@ public class AdminDashboardMetricsTest extends BaseTest {
                 "Dashboard Available Assets count should match Asset Tracking Available count");
     }
 
-    // ── TC_DSH_004 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 4,
           groups = {"regression", "admin", "positive"},
           description = "TC_DSH_004: Overdue Assets count matches DB")
@@ -95,7 +91,7 @@ public class AdminDashboardMetricsTest extends BaseTest {
                 "Dashboard Overdue Assets count should match Asset Tracking Overdue count");
     }
 
-    // ── TC_DSH_005 ──────────────────────────────────────────────────────────────
+    
     @Test(priority = 5,
           groups = {"regression", "admin", "positive"},
           description = "TC_DSH_005: Lost Assets count matches DB")
@@ -112,4 +108,6 @@ public class AdminDashboardMetricsTest extends BaseTest {
         Assert.assertEquals(dashboardCount, actualCount,
                 "Dashboard Lost Assets count should match Asset Tracking Lost count");
     }
+
+
 }

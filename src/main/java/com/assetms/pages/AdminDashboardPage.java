@@ -8,17 +8,16 @@ public class AdminDashboardPage {
 
     private final WebDriver driver;
 
-    // ── Navigation ────────────────────────────────────────────────────────────────
+    
     private final By navDashboard = By.xpath("/html/body/app-root/div/aside/nav/a[1]");
-
-    // ── Page Heading ──────────────────────────────────────────────────────────────
+    
     private final By pageHeading = By.xpath("//h2[normalize-space(text())='Admin Dashboard']");
 
-    // ── Stat Cards ────────────────────────────────────────────────────────────────
-    // Each .card.stat has an <h3> (label) and <p> (value)
+    
+    
     private final By statCards = By.cssSelector(".card.stat");
 
-    // Individual stat values by their label
+    
     private final By totalEmployeesValue = By.xpath("//div[@class='card stat'][.//h3[text()='Total Employees']]//p");
     private final By totalAssetsValue    = By.xpath("//div[@class='card stat'][.//h3[text()='Total Assets']]//p");
     private final By assignedAssetsValue = By.xpath("//div[@class='card stat'][.//h3[text()='Assigned Assets']]//p");
@@ -27,34 +26,23 @@ public class AdminDashboardPage {
     private final By lostAssetsValue     = By.xpath("//div[@class='card stat'][.//h3[text()='Lost Assets']]//p");
     private final By openTicketsValue    = By.xpath("//div[@class='card stat'][.//h3[text()='Open Tickets']]//p");
 
-    // ── Tables ─────────────────────────────────────────────────────────────────────
+    
     private final By recentAllocationsRows = By.xpath("//h3[text()='Recent Allocations']/following-sibling::div//table//tr[position()>1]");
     private final By overdueListRows       = By.xpath("//h3[text()='Overdue Assets']/following-sibling::div//table//tr[position()>1]");
     private final By openTicketRows        = By.xpath("//h3[text()='Open Tickets']/following-sibling::div//table//tr[position()>1]");
 
-    // ── Constructor ───────────────────────────────────────────────────────────────
+    
     public AdminDashboardPage(WebDriver driver) {
         this.driver = driver;
     }
 
-    // ── Navigation ─────────────────────────────────────────────────────────────────
+    
 
     public void navigateToDashboard() {
         WaitUtils.click(driver, navDashboard);
         WaitUtils.waitForVisible(driver, pageHeading);
     }
 
-    // ── Verifications ───────────────────────────────────────────────────────────────
-
-    public String getPageHeading() {
-        return WaitUtils.waitForVisible(driver, pageHeading).getText();
-    }
-
-    public boolean isDashboardVisible() {
-        return WaitUtils.isPresent(driver, pageHeading);
-    }
-
-    // ── Stat Card Values ────────────────────────────────────────────────────────────
 
     public String getTotalEmployees() {
         return WaitUtils.waitForVisible(driver, totalEmployeesValue).getText();
@@ -84,12 +72,12 @@ public class AdminDashboardPage {
         return WaitUtils.waitForVisible(driver, openTicketsValue).getText();
     }
 
-    /** Returns the number of stat cards visible on the dashboard. */
+    
     public int getStatCardCount() {
         return driver.findElements(statCards).size();
     }
 
-    // ── Table Row Counts ────────────────────────────────────────────────────────────
+    
 
     public int getRecentAllocationRowCount() {
         return driver.findElements(recentAllocationsRows).size();
@@ -103,12 +91,12 @@ public class AdminDashboardPage {
         return driver.findElements(openTicketRows).size();
     }
 
-    /** Returns true if all 7 stat cards are displayed. */
+    
     public boolean areAllStatCardsVisible() {
         return getStatCardCount() == 7;
     }
 
-    /** Returns true if the numeric value in a stat is a non-negative integer. */
+    
     public boolean isStatValueNumeric(String statValue) {
         try {
             return Integer.parseInt(statValue.trim()) >= 0;

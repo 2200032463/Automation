@@ -40,7 +40,7 @@ public class MyListener implements ITestListener, IInvokedMethodListener {
         String desc = result.getMethod().getDescription();
         ExtentTest extentTest = extent.createTest(result.getMethod().getMethodName(), desc);
         
-        // Add groups as categories in ExtentReports
+        
         String[] groups = result.getMethod().getGroups();
         if (groups != null) {
             for (String group : groups) {
@@ -65,13 +65,13 @@ public class MyListener implements ITestListener, IInvokedMethodListener {
         if (t != null) {
             t.fail(result.getThrowable());
             
-            // Capture and attach a screenshot on failure
+            
             Object testInstance = result.getInstance();
             if (testInstance instanceof BaseTest) {
                 WebDriver driver = ((BaseTest) testInstance).driver;
                 if (driver != null) {
                     try {
-                        // Capture screenshot and save to file
+                        
                         String screenshotPath = captureScreenshot(driver, result.getMethod().getMethodName());
                         if (screenshotPath != null) {
                             t.addScreenCaptureFromPath(screenshotPath);
@@ -116,7 +116,7 @@ public class MyListener implements ITestListener, IInvokedMethodListener {
                 BaseTest baseTest = (BaseTest) testInstance;
                 String className = testInstance.getClass().getSimpleName();
                 
-                // Only clear session for stateless test classes where each method performs its own login
+                
                 if (className.equals("LoginValidTest") || className.equals("LoginInvalidTest")) {
                     WebDriver driver = baseTest.driver;
                     if (driver != null) {
@@ -138,33 +138,28 @@ public class MyListener implements ITestListener, IInvokedMethodListener {
         }
     }
 
-    /**
-     * Helper method to capture screenshot and save to file system
-     * @param driver WebDriver instance
-     * @param testMethodName The name of the test method
-     * @return The relative path to the saved screenshot file
-     */
+    
     private String captureScreenshot(WebDriver driver, String testMethodName) {
         try {
-            // Create screenshots directory if it doesn't exist
+            
             File screenshotDir = new File(SCREENSHOT_DIR);
             if (!screenshotDir.exists()) {
                 screenshotDir.mkdirs();
             }
 
-            // Generate unique filename with timestamp
+            
             String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss_SSS").format(new Date());
             String fileName = testMethodName + "_" + timestamp + ".png";
             String filePath = SCREENSHOT_DIR + File.separator + fileName;
 
-            // Capture screenshot
+            
             TakesScreenshot ts = (TakesScreenshot) driver;
             File screenshot = ts.getScreenshotAs(OutputType.FILE);
             
-            // Copy to destination
+            
             Files.copy(screenshot.toPath(), Paths.get(filePath));
             
-            // Return relative path for report (works in HTML)
+            
             return filePath;
 
         } catch (IOException e) {

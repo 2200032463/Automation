@@ -15,10 +15,10 @@ public class AssetTrackingPage {
     private final By navAssetTracking =
             By.xpath("//span[normalize-space()='Asset Tracking']");
 
-    // ── Page Heading ─────────────────────────────────────────────────────────────
+    
     private final By pageHeading = By.xpath("//h2[normalize-space(text())='Asset Tracking Page']");
 
-    // ── Filter Buttons ─────────────────────────────────────────────────────────────
+    
     private final By filterAll       = By.xpath("//button[normalize-space(text())='All Assets']");
     private final By filterAvailable = By.xpath("//button[normalize-space(text())='Available Assets']");
     private final By filterAssigned  = By.xpath("//button[normalize-space(text())='Assigned Assets']");
@@ -26,26 +26,26 @@ public class AssetTrackingPage {
     private final By filterLost      = By.xpath("//button[normalize-space(text())='Lost Assets']");
     private final By filterDamaged   = By.xpath("//button[normalize-space(text())='Damaged Assets']");
 
-    // ── Search ─────────────────────────────────────────────────────────────────────
+    
     private final By searchInput = By.cssSelector(
             "input.input[placeholder='Search Asset Name, Asset ID or Employee Name']");
 
-    // ── Table ─────────────────────────────────────────────────────────────────────
+    
     private final By tableRows = By.cssSelector(".table-wrap table tr:not(:first-child)");
 
-    // ── Constructor ───────────────────────────────────────────────────────────────
+    
     public AssetTrackingPage(WebDriver driver) {
         this.driver = driver;
     }
 
-    // ── Navigation ─────────────────────────────────────────────────────────────────
+    
 
     public void navigateToAssetTracking() {
         WaitUtils.click(driver, navAssetTracking);
         WaitUtils.waitForVisible(driver, pageHeading);
     }
 
-    // ── Verifications ───────────────────────────────────────────────────────────────
+    
 
     public String getPageHeading() {
         return WaitUtils.waitForVisible(driver, pageHeading).getText();
@@ -55,7 +55,7 @@ public class AssetTrackingPage {
         return WaitUtils.isPresent(driver, pageHeading);
     }
 
-    // ── Filter Actions ──────────────────────────────────────────────────────────────
+    
 
     public void filterAll() {
         WaitUtils.click(driver, filterAll);
@@ -87,7 +87,7 @@ public class AssetTrackingPage {
         WaitUtils.sleep(500);
     }
 
-    // ── Search ─────────────────────────────────────────────────────────────────────
+    
 
     public void searchAsset(String text) {
         WaitUtils.type(driver, searchInput, text);
@@ -98,14 +98,14 @@ public class AssetTrackingPage {
         WaitUtils.waitForVisible(driver, searchInput).clear();
     }
 
-    // ── Table Helpers ───────────────────────────────────────────────────────────────
+    
 
-    /** Returns total count of visible data rows. */
+    
     public int getTableRowCount() {
         return driver.findElements(tableRows).size();
     }
 
-    /** Returns true if any row in the table contains the given text. */
+    
     public boolean isRowPresent(String text) {
         List<WebElement> rows = driver.findElements(tableRows);
         for (WebElement row : rows) {
@@ -116,15 +116,12 @@ public class AssetTrackingPage {
         return false;
     }
 
-    /**
-     * Checks if all visible rows contain the expected status text.
-     * Useful after applying a status filter.
-     */
+    
     public boolean allRowsHaveStatus(String expectedStatus) {
         List<WebElement> rows = driver.findElements(tableRows);
         if (rows.isEmpty()) return false;
         for (WebElement row : rows) {
-            // Status is in the last <td>
+            
             List<WebElement> cells = row.findElements(By.tagName("td"));
             if (cells.isEmpty()) continue;
             String statusCell = cells.get(cells.size() - 1).getText();
