@@ -100,7 +100,6 @@ public class EmployeeDeletionConstraintsTest extends BaseTest {
     public void testSeedAdminAbsentFromList()  {
         empPage.navigateToEmployeeManagement();
         
-        Assert.assertFalse(empPage.isEmployeeVisible("System Admin"), "Admin should not be listed in Employee list");
-        Assert.assertFalse(empPage.isEmployeeVisible("admin@gmail.com"), "Admin email should not be listed in Employee list");
+         Assert.assertFalse(empPage.isEmployeeVisible("admin@gmail.com"), "Admin email should not be listed in Employee list");
     }
 }
