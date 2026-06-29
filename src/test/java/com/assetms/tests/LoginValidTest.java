@@ -41,7 +41,7 @@ public class LoginValidTest extends BaseTest {
     }
 
     
-    @Test(priority = 2,
+    @Test(priority = 6,
             groups = {"regression", "employee", "positive"},
             description = "TC_LGN_002: Employee login with valid credentials redirects to employee dashboard")
     public void testEmployeeLoginSuccess() {
@@ -52,10 +52,11 @@ public class LoginValidTest extends BaseTest {
 
         Assert.assertTrue(loginPage.isRedirectedTo("/employee-dashboard"),
                 "Employee was NOT redirected to /employee-dashboard.");
+
     }
 
     
-    @Test(priority = 6,
+    @Test(priority = 2,
             groups = {"regression", "admin", "positive"},
             description = "TC_LGN_003: Admin login shows dashboard page heading")
     public void testAdminDashboardStatCardsVisible() {

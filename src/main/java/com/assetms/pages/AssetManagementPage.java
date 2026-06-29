@@ -91,11 +91,10 @@ public class AssetManagementPage {
 
     
     public void searchAsset(String text) {
-        
+        WaitUtils.sleep(3000);
         WebElement field = WaitUtils.waitForClickable(driver, searchInput);
         field.click();
-        field.sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        field.sendKeys(Keys.chord(Keys.COMMAND, "a"));
+        field.clear();
         field.sendKeys(Keys.DELETE);
 
         

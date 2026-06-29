@@ -90,8 +90,7 @@ public class WaitUtils {
     public static void type(WebDriver driver, By locator, String text) {
         WebElement el = waitForClickable(driver, locator);
         el.click();
-        el.sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        el.sendKeys(Keys.chord(Keys.COMMAND, "a"));
+        el.clear();
         el.sendKeys(Keys.DELETE);
         if (text != null && !text.isEmpty()) {
             el.sendKeys(text);
