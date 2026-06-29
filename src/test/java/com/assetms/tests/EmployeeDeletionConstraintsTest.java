@@ -5,6 +5,7 @@ import com.assetms.pages.EmployeeManagementPage;
 import com.assetms.pages.LoginPage;
 import com.assetms.utils.WaitUtils;
 import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -16,9 +17,30 @@ public class EmployeeDeletionConstraintsTest extends BaseTest {
 
     @BeforeClass(alwaysRun = true, dependsOnMethods = "setUp")
     public void loginAndNavigate() {
+        // Clear previous session
+        driver.manage().deleteAllCookies();
+
+        ((org.openqa.selenium.JavascriptExecutor) driver).executeScript(
+                "window.localStorage.clear(); window.sessionStorage.clear();");
+
+        // Open login page
+        driver.get(BASE_URL);
+
+        // Wait until login page is fully loaded
+        WaitUtils.waitForUrlContains(driver, "/login");
+        WaitUtils.waitForAngularBootstrapped(driver);
+        WaitUtils.waitForClickable(driver,
+                By.cssSelector("input[type='email']"));
+
+        // Login
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login("admin@gmail.com", "admin123");
-        Assert.assertTrue(loginPage.isRedirectedTo("/admin-dashboard"), "Login redirection failed");
+
+        // Verify login
+        Assert.assertTrue(loginPage.isRedirectedTo("/admin-dashboard"),
+                "Admin login failed.");
+
+        // Navigate to Employee Management
         empPage = new EmployeeManagementPage(driver);
         empPage.navigateToEmployeeManagement();
     }

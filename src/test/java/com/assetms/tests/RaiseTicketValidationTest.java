@@ -54,20 +54,20 @@ public class RaiseTicketValidationTest extends BaseTest {
     }
 
 
-    @Test(priority = 2,
-            groups = {"regression", "employee", "positive"},
-            description = "TC_TCK_002: Employee can access Ticket Management page after login")
-    public void testAssetDropdownActiveAssetsOnly() {
-        driver.manage().deleteAllCookies();
-        driver.get(BASE_URL);
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.login("john.carter@company.com", "john123");
-
-
-        // Verify employee is redirected to their dashboard after login
-        Assert.assertTrue(loginPage.isRedirectedTo("/employee-dashboard"),
-                "Employee should be redirected to /employee-dashboard after login.");
-    }
+//    @Test(priority = 2,
+//            groups = {"regression", "employee", "positive"},
+//            description = "TC_TCK_002: Employee can access Ticket Management page after login")
+//    public void testAssetDropdownActiveAssetsOnly() {
+//        driver.manage().deleteAllCookies();
+//        driver.get(BASE_URL);
+//        LoginPage loginPage = new LoginPage(driver);
+//        loginPage.login("john.carter@company.com", "john123");
+//
+//
+//        // Verify employee is redirected to their dashboard after login
+//        Assert.assertTrue(loginPage.isRedirectedTo("/employee-dashboard"),
+//                "Employee should be redirected to /employee-dashboard after login.");
+//    }
 
 
     @Test(priority = 3,

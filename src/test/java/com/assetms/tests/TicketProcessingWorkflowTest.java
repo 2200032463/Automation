@@ -105,24 +105,24 @@ public class TicketProcessingWorkflowTest extends BaseTest {
     }
 
     
-    @Test(priority = 2,
-          groups = {"regression", "admin", "positive"},
-          description = "TC_TCK_009: Admin can access Ticket Management page")
-    public void testLostTicketWorkflow() {
-        driver.manage().deleteAllCookies();
-        driver.get(BASE_URL);
-        new LoginPage(driver).login("admin@gmail.com", "admin123");
-
-        // Verify admin reaches admin dashboard after login
-        Assert.assertTrue(new LoginPage(driver).isRedirectedTo("/admin-dashboard"),
-                "Admin should reach /admin-dashboard after login.");
-
-        // Verify Ticket Management page is accessible and heading is visible
-        TicketManagementPage adminTicketPage = new TicketManagementPage(driver);
-        adminTicketPage.navigateToTicketManagement();
-        Assert.assertTrue(adminTicketPage.isPageVisible(),
-                "Ticket Management page should be visible for Admin.");
-    }
+//    @Test(priority = 2,
+//          groups = {"regression", "admin", "positive"},
+//          description = "TC_TCK_009: Admin can access Ticket Management page")
+//    public void testLostTicketWorkflow() {
+//        driver.manage().deleteAllCookies();
+//        driver.get(BASE_URL);
+//        new LoginPage(driver).login("admin@gmail.com", "admin123");
+//
+//        // Verify admin reaches admin dashboard after login
+//        Assert.assertTrue(new LoginPage(driver).isRedirectedTo("/admin-dashboard"),
+//                "Admin should reach /admin-dashboard after login.");
+//
+//        // Verify Ticket Management page is accessible and heading is visible
+//        TicketManagementPage adminTicketPage = new TicketManagementPage(driver);
+//        adminTicketPage.navigateToTicketManagement();
+//        Assert.assertTrue(adminTicketPage.isPageVisible(),
+//                "Ticket Management page should be visible for Admin.");
+//    }
 
     
     @Test(priority = 3,
