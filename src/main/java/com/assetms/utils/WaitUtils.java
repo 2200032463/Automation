@@ -36,7 +36,13 @@ public class WaitUtils {
         return wait(driver).until(ExpectedConditions.elementToBeClickable(locator));
     }
 
-    
+    public static boolean isVisible(WebDriver driver, By locator) {
+        try {
+            return driver.findElement(locator).isDisplayed();
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
 
     
     public static boolean waitForUrlContains(WebDriver driver, String urlFragment) {

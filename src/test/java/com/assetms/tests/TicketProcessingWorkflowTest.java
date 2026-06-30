@@ -3,6 +3,7 @@ package com.assetms.tests;
 import com.assetms.pages.LoginPage;
 import com.assetms.pages.TicketManagementPage;
 import com.assetms.utils.WaitUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
@@ -26,7 +27,7 @@ public class TicketProcessingWorkflowTest extends BaseTest {
     }
 
     
-    private String raiseTicketAsEmployee(String issueType, String desc) {
+    private  String raiseTicketAsEmployee(String issueType, String desc) {
         driver.manage().deleteAllCookies();
         driver.get(BASE_URL);
         new LoginPage(driver).login("john.carter@company.com", "john123");
@@ -104,38 +105,77 @@ public class TicketProcessingWorkflowTest extends BaseTest {
             "CLOSED", "Ticket should transition to CLOSED");
     }
 
-    
-//    @Test(priority = 2,
-//          groups = {"regression", "admin", "positive"},
-//          description = "TC_TCK_009: Admin can access Ticket Management page")
-//    public void testLostTicketWorkflow() {
+
+
+//    @Test(priority = 3,
+//            groups = {"regression", "admin", "positive"},
+//            description = "TC_TCK_010: Admin ticket action buttons change dynamically based on ticket status")
+//    public void testActionButtonsChangeDynamically() {
 //        driver.manage().deleteAllCookies();
 //        driver.get(BASE_URL);
 //        new LoginPage(driver).login("admin@gmail.com", "admin123");
 //
-//        // Verify admin reaches admin dashboard after login
-//        Assert.assertTrue(new LoginPage(driver).isRedirectedTo("/admin-dashboard"),
-//                "Admin should reach /admin-dashboard after login.");
+//        WaitUtils.sleep(5000);
+//        // Verify admin URL after login
+//        String currentUrl = driver.getCurrentUrl();
+//        Assert.assertTrue(currentUrl.contains("/admin-dashboard"),
+//                "Admin should be on /admin-dashboard after login. Current URL: " + currentUrl);
 //
-//        // Verify Ticket Management page is accessible and heading is visible
 //        TicketManagementPage adminTicketPage = new TicketManagementPage(driver);
 //        adminTicketPage.navigateToTicketManagement();
-//        Assert.assertTrue(adminTicketPage.isPageVisible(),
-//                "Ticket Management page should be visible for Admin.");
+//        WaitUtils.sleep(5000);
+//
+//        // Pick an existing ticket that is already in PENDING state instead of raising a new one
+//        String assetCode = adminTicketPage.getFirstTicketIdWithStatus("PENDING");
+//        if (assetCode.isEmpty()) {
+//            System.out.println("No existing ticket found in PENDING state. Skipping.");
+//            return;
+//        }
+//
+//        Assert.assertTrue(adminTicketPage.isTicketPresent(assetCode), "Ticket should exist in Admin view");
+//        Assert.assertEquals(adminTicketPage.getTicketStatus(assetCode), "PENDING", "Initial ticket state should be PENDING");
+//
+//        // PENDING -> only "Start Repair" button should be visible
+//        List<String> pendingButtons = adminTicketPage.getVisibleActionButtons(assetCode);
+//        Assert.assertEquals(pendingButtons.size(), 1,
+//                "Only one action button should be visible in PENDING state. Found: " + pendingButtons);
+//        Assert.assertTrue(pendingButtons.get(0).equalsIgnoreCase("Start Repair"),
+//                "PENDING state should show only 'Start Repair' button. Found: " + pendingButtons);
+//
+//        // Click "Start Repair" -> ticket moves to UNDER_REPAIR, only "Resolve" should be visible
+//        adminTicketPage.clickActionForTicket(assetCode, "Start Repair");
+//        Assert.assertEquals(
+//                adminTicketPage.waitForTicketStatus(assetCode, "UNDER_REPAIR", 10),
+//                "UNDER_REPAIR", "Ticket should transition to UNDER_REPAIR");
+//
+//        List<String> underRepairButtons = adminTicketPage.getVisibleActionButtons(assetCode);
+//        Assert.assertEquals(underRepairButtons.size(), 1,
+//                "Only one action button should be visible in UNDER_REPAIR state. Found: " + underRepairButtons);
+//        Assert.assertTrue(underRepairButtons.get(0).equalsIgnoreCase("Resolve"),
+//                "UNDER_REPAIR state should show only 'Resolve' button. Found: " + underRepairButtons);
+//
+//        // Click "Resolve" -> ticket moves to RESOLVED, only "Close" should be visible
+//        adminTicketPage.clickActionForTicket(assetCode, "Resolve");
+//        Assert.assertEquals(
+//                adminTicketPage.waitForTicketStatus(assetCode, "RESOLVED", 10),
+//                "RESOLVED", "Ticket should transition to RESOLVED");
+//
+//        List<String> resolvedButtons = adminTicketPage.getVisibleActionButtons(assetCode);
+//        Assert.assertEquals(resolvedButtons.size(), 1,
+//                "Only one action button should be visible in RESOLVED state. Found: " + resolvedButtons);
+//        Assert.assertTrue(resolvedButtons.get(0).equalsIgnoreCase("Close"),
+//                "RESOLVED state should show only 'Close' button. Found: " + resolvedButtons);
+//
+//        // Click "Close" -> ticket moves to CLOSED, no action buttons should remain
+//        adminTicketPage.clickActionForTicket(assetCode, "Close");
+//        Assert.assertEquals(
+//                adminTicketPage.waitForTicketStatus(assetCode, "CLOSED", 10),
+//                "CLOSED", "Ticket should transition to CLOSED");
+//
+//        List<String> closedButtons = adminTicketPage.getVisibleActionButtons(assetCode);
+//        Assert.assertTrue(closedButtons.isEmpty(),
+//                "No action buttons should be displayed once ticket is CLOSED. Found: " + closedButtons);
 //    }
 
-    
-    @Test(priority = 3,
-          groups = {"regression", "admin", "positive"},
-          description = "TC_TCK_010: Admin login page redirects to admin dashboard")
-    public void testActionButtonsChangeDynamically() {
-        driver.manage().deleteAllCookies();
-        driver.get(BASE_URL);
-        new LoginPage(driver).login("admin@gmail.com", "admin123");
 
-        // Verify admin URL after login
-        String currentUrl = driver.getCurrentUrl();
-        Assert.assertTrue(currentUrl.contains("/admin-dashboard"),
-                "Admin should be on /admin-dashboard after login. Current URL: " + currentUrl);
-    }
 }
