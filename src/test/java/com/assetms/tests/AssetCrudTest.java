@@ -58,17 +58,13 @@ public class AssetCrudTest extends BaseTest {
         assetPage.fillAssetForm(testAssetName, "Monitor", "Dell",
                 "2026-01-01", "2028-01-01", "AVAILABLE", "GOOD");
         assetPage.clickAddAsset();
-        // Wait for asset to be added
         WaitUtils.sleep(3000);
 
-        // Refresh the page
         driver.navigate().refresh();
 
-        // Wait until Angular loads
         WaitUtils.waitForAngularBootstrapped(driver);
 
-//        // Navigate back to Asset Management page
-//        assetPage.navigateToAssetManagement();
+
         
         assetPage.searchAsset(testAssetName);
         WaitUtils.waitForCondition(driver, d -> assetPage.isAssetPresent(testAssetName));
@@ -87,7 +83,6 @@ public class AssetCrudTest extends BaseTest {
         WaitUtils.sleep(3000);
         driver.navigate().refresh();
 
-        // Wait until Angular loads
         WaitUtils.waitForAngularBootstrapped(driver);
 
         assetPage.searchAsset(testAssetName);

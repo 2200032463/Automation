@@ -39,23 +39,7 @@ public class RaiseTicketValidationTest extends BaseTest {
         Assert.assertFalse(adminTicketPage.isRaiseTicketFormVisible(),
                 "Raise Ticket form should NOT be visible to Admin");
 
-
-//        driver.manage().deleteAllCookies();
-//        driver.get(BASE_URL);
-//
-//        LoginPage loginPageEmp = new LoginPage(driver);
-//        loginPageEmp.login("john.carter@company.com", "john123");
-//
-//        WaitUtils.waitForAngularBootstrapped(driver);
-//
-//        Assert.assertTrue(loginPageEmp.isRedirectedTo("/employee-dashboard"), "Login redirection failed");
-//        TicketManagementPage empTicketPage = new TicketManagementPage(driver);
-//
-//        empTicketPage.navigateToTicketManagement();
-//
-//        Assert.assertTrue(empTicketPage.isRaiseTicketFormVisible(),
-//                "Raise Ticket form should be visible to Employee");
-    }
+ }
 
 
     @Test(priority = 2,

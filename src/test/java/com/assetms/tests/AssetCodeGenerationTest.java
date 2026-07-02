@@ -55,16 +55,13 @@ public class AssetCodeGenerationTest extends BaseTest {
           description = "TC_AST_008: Asset code column has unique database constraint")
     public void testAssetCodeUniqueConstraint() {
         assetPage.navigateToAssetManagement();
-        
-        
-        
+
         boolean hasAssetCodeInputInForm = false;
         try {
             driver.findElement(By.cssSelector("input[formcontrolname='assetCode']"));
             hasAssetCodeInputInForm = true;
         } catch (Exception ignored) {}
 
-        
         if (hasAssetCodeInputInForm) {
             WebElement input = driver.findElement(By.cssSelector("input[formcontrolname='assetCode']"));
             Assert.assertFalse(input.isEnabled(), "Asset Code input should be disabled if present on form");
